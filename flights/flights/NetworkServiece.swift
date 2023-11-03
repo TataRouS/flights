@@ -16,7 +16,7 @@ final class NetworkService {
     private let session = URLSession.shared
     
     
-    func getDeparture(completion: @escaping (Result<Schedule, Error>) -> Void ) {
+    func getDeparture(completion: @escaping (Result<[Flight], Error>) -> Void ) {
         let url = URL(string: "https://api.rasp.yandex.net/v3.0/schedule/?apikey=4890529e-d248-44de-8689-5e0545b839c6&station=s9628674&transport_types=plane&event=departure")
         
         
@@ -35,7 +35,7 @@ final class NetworkService {
             do {
                 let departure = try
                 JSONDecoder().decode(Schedule.self, from: data)
-                completion(.success(departure))
+                completion(.success(departure.schedule))
                 print(departure)
             } catch {
                 completion(.failure(error))
@@ -46,7 +46,7 @@ final class NetworkService {
     }
     
     
-    func getArrival(completion: @escaping(Result<Schedule, Error>) -> Void) {
+    func getArrival(completion: @escaping(Result<[Flight], Error>) -> Void) {
         let url = URL(string: "https://api.rasp.yandex.net/v3.0/schedule/?apikey=4890529e-d248-44de-8689-5e0545b839c6&station=s9628674&transport_types=plane&event=arrival")
         
         
@@ -65,7 +65,7 @@ final class NetworkService {
             do {
                 let departure = try
                 JSONDecoder().decode(Schedule.self, from: data)
-                completion(.success(departure))
+                completion(.success(departure.schedule))
                 print(departure)
             } catch {
                 completion(.failure(error))

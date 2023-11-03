@@ -8,10 +8,10 @@
 
 import UIKit
 
-class GroupsViewController: UITableViewController {
+final class Departure: UITableViewController {
     
     private let networkService = NetworkService()
-    private var models: Schedule
+    private var models: [Flight] = []
    
     
     override func viewDidLoad() {
@@ -21,7 +21,7 @@ class GroupsViewController: UITableViewController {
         navigationController?.navigationBar.tintColor = .black
         navigationController?.navigationBar.barTintColor = .white
     
-        tableView.register(DepartuleCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(DepartureCell.self, forCellReuseIdentifier: "Cell")
         
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(update), for: .valueChanged)
@@ -35,11 +35,11 @@ class GroupsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        guard let cell = cell as? DepartuleCell else {
+        guard let cell = cell as? DepartureCell else {
             return UITableViewCell()
         }
         let model = models[indexPath.row]
-        cell.setupTextGroups(group: model)
+        cell.setupTextFlightDetails(departure: model)
         return cell
         
     }
@@ -54,7 +54,6 @@ class GroupsViewController: UITableViewController {
                     self?.tableView.reloadData()
                 }
             case .failure(_):
-                self?.models = self?.fileCache.fetchGroups() ?? []
                 DispatchQueue.main.async {
                     self?.showAlert()
                 }
@@ -65,16 +64,14 @@ class GroupsViewController: UITableViewController {
     
     
     @objc func update() {
-        networkService.getGroups { [weak self] result in
+        networkService.getDeparture { [weak self] result in
             switch result {
-            case .success(let groups):
-                self?.models = groups.response.items
-                self?.fileCache.addGroups(groups: groups.response.items)
+            case .success(let departure):
+                self?.models = departure
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
             case .failure(_):
-                self?.models = self?.fileCache.fetchGroups() ?? []
                 DispatchQueue.main.async {
                     self?.showAlert()
                 }
@@ -86,11 +83,10 @@ class GroupsViewController: UITableViewController {
     }
 }
 
-private extension GroupsViewController {
+private extension Departure {
     func showAlert(){
-        let date = DateHelper.getDate(date: fileCache.fetchGroupDate())
         let alert = UIAlertController(title: "Не удалось получить данные",
-                                      message: "Данные актуальны на \(date)",
+                                      message: "Данные актуальны на",
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Закрыть", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
