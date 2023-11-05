@@ -39,11 +39,11 @@ final class ArrivalCell: UITableViewCell {
     
   
     
-    func setupTextFlightDetails(departure: Flight) {
-        let number = departure.thread.number
-        let title = departure.thread.title
-        let vehicle = departure.thread.vehicle
-        let time = departure.arrival ?? "время не известно"
+    func setupTextFlightDetails(arrival: Flight) {
+        let number = arrival.thread.number
+        let title = arrival.thread.title
+        let vehicle = arrival.thread.vehicle
+        let time = arrival.arrival ?? "время не известно"
         text1.text = "\(number)"
         text2.text = "\(title)"
         text3.text = "\(vehicle)"
