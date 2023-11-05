@@ -37,6 +37,14 @@ final class DepartureCell: UITableViewCell {
         label.textColor = .black
         return label
     }()
+    
+    private var banner: UIView = {
+        let label = UILabel()
+        let label2 = UILabel()
+  //      label.text = "Description"
+        label.textColor = .black
+        return label
+    }()
   
     
     func setupTextFlightDetails(departure: Flight) {
